@@ -48,9 +48,11 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     // Runs only once.
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         // Set the label to say "Disconnected" and make the text red
         connectStatusLbl.text = "Disconnected"
         connectStatusLbl.textColor = UIColor.red
+        
         // Initialize CoreBluetooth Central Manager object which will be necessary
         // to use CoreBlutooth functions
         centralManager = CBCentralManager(delegate: self, queue: nil)
@@ -59,67 +61,90 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     // This function is called right after the view is loaded onto the screen
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
         // Reset the peripheral connection with the app
         disconnectFromDevice()
         print("View Cleared")
     }
     
-    
+    // This function is called right before view disappears from screen
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         print("Stop Scanning")
+        
+        // Central Manager obect stops the scanning for peripherals
         centralManager?.stopScan()
     }
 
+    // Called when manager's state is changed
+    // Required method for setting up centralManager object
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        // If manager's state is "poweredOn", that means Bluetooth has been enabled
+        // in the app. We can begin scanning for peripherals
         if central.state == CBManagerState.poweredOn {
-            // We will just handle it the easy way here: if Bluetooth is on, proceed...start scan!
             print("Bluetooth Enabled")
             startScan()
-            
-        } else {
-            //If Bluetooth is off, display a UI alert message saying "Bluetooth is not enable" and "Make sure that your bluetooth is turned on"
+        }
+        
+        // Else, Bluetooth has NOT been enabled, so we display an alert message to the screen
+        // saying that Bluetooth needs to be enabled to use the app
+        else {
             print("Bluetooth Disabled- Make sure your Bluetooth is turned on")
+
+            let alertVC = UIAlertController(title: "Bluetooth is not enabled",
+                                            message: "Make sure that your bluetooth is turned on",
+                                            preferredStyle: UIAlertController.Style.alert)
             
-            let alertVC = UIAlertController(title: "Bluetooth is not enabled", message: "Make sure that your bluetooth is turned on", preferredStyle: UIAlertController.Style.alert)
-            let action = UIAlertAction(title: "ok", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction) -> Void in
-                self.dismiss(animated: true, completion: nil)
-            })
+            let action = UIAlertAction(title: "ok",
+                                       style: UIAlertAction.Style.default,
+                                       handler: { (action: UIAlertAction) -> Void in
+                                                self.dismiss(animated: true, completion: nil)
+                                                })
             alertVC.addAction(action)
             self.present(alertVC, animated: true, completion: nil)
         }
     }
     
+    // Start scanning for peripherals
     func startScan() {
-        peripheralList = []
         print("Now Scanning...")
-        self.timer.invalidate()
         print("Service ID Search: \(BLE_Service_UUID)")
-        //[BLEService_UUID]
-        //[Particle.BLEService_UUID]
-        centralManager?.scanForPeripherals(withServices: [BLE_Service_UUID], options: [CBCentralManagerScanOptionAllowDuplicatesKey:false])
+        // Make an empty list of peripherals that were found
+        peripheralList = []
+        
+        // Stop the timer
+        self.timer.invalidate()
+        
+        // Call method in centralManager class that actually begins the scanning.
+        // We are targetting services that have the same UUID value as the BLE_Service_UUID variable.
+        // Use a timer to wait 10 seconds before calling cancelScan().
+        centralManager?.scanForPeripherals(withServices: [BLE_Service_UUID],
+                                           options: [CBCentralManagerScanOptionAllowDuplicatesKey:false])
         Timer.scheduledTimer(withTimeInterval: 10, repeats: false) {_ in
             self.cancelScan()
         }
     }
     
+    // Cancel scanning for peripheral
     func cancelScan() {
         self.centralManager?.stopScan()
         print("Scan Stopped")
         print("Number of Peripherals Found: \(peripheralList.count)")
     }
     
+    // Disconnect app from peripherals
     func disconnectFromDevice () {
-        // We have a connection to the device but we are not subscribed to the Transfer Characteristic for some reason.
-        // Therefore, we will just disconnect from the peripheral
+        //
         if blePeripheral != nil {
             centralManager?.cancelPeripheralConnection(blePeripheral!)
         }
     }
 
-    
-    func centralManager(_ central: CBCentralManager, didDiscover peripheral:
-    CBPeripheral,advertisementData: [String : Any], rssi RSSI: NSNumber) {
+    // Called when a peripheral is found.
+    func centralManager(_ central: CBCentralManager,
+                        didDiscover peripheral: CBPeripheral,
+                        advertisementData: [String : Any],
+                        rssi RSSI: NSNumber) {
         blePeripheral = peripheral
         self.peripheralList.append(peripheral)
         self.rssiList.append(RSSI)
