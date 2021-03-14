@@ -38,23 +38,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     @IBOutlet weak var chartBox: LineChartView!
     
     @IBAction func refreshBtn(_ sender: Any) {
-        receivedData.removeAll()
-        clearGraph()
-        if (curPeripheral != nil) {
-            centralManager?.cancelPeripheralConnection(curPeripheral!)
-        }
-        usleep(1000000)
-        startScan()
     }
     
     @IBAction func showGraphBtn(_ sender: Any) {
-        if (showGraphIsOn) {
-            clearGraph()
-            showGraphIsOn = false
-        }
-        else {
-            showGraphIsOn = true
-        }
     }
   
     // This function is called before the storyboard view is loaded onto the screen.
@@ -76,7 +62,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         super.viewDidAppear(animated)
         
         // Reset the peripheral connection with the app
-        disconnectFromDevice()
+        if curPeripheral != nil {
+            centralManager?.cancelPeripheralConnection(curPeripheral!)
+        }
         print("View Cleared")
     }
     
@@ -145,13 +133,6 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         self.centralManager?.stopScan()
         print("Scan Stopped")
         print("Number of Peripherals Found: \(peripheralList.count)")
-    }
-    
-    // Disconnect app from peripherals
-    func disconnectFromDevice() {
-        if curPeripheral != nil {
-            centralManager?.cancelPeripheralConnection(curPeripheral!)
-        }
     }
 
     // Called when a peripheral is found.
@@ -432,7 +413,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
 //@IBAction func refreshBtn(_ sender: Any) {
 //    receivedData.removeAll()
 //    clearGraph()
-//    centralManager?.cancelPeripheralConnection(blePeripheral!)
+//    if (curPeripheral != nil) {
+//        centralManager?.cancelPeripheralConnection(curPeripheral!)
+//    }
 //    usleep(1000000)
 //    startScan()
 //}
