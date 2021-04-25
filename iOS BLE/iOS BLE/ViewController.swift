@@ -38,11 +38,25 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     @IBOutlet weak var chartBox: LineChartView!
     
     @IBAction func refreshBtn(_ sender: Any) {
+        receivedData.removeAll()
+        clearGraph()
+        if (curPeripheral != nil) {
+            centralManager?.cancelPeripheralConnection(curPeripheral!)
+        }
+        usleep(1000000)
+        startScan()
     }
     
     @IBAction func showGraphBtn(_ sender: Any) {
+        if (showGraphIsOn) {
+            clearGraph()
+            showGraphIsOn = false
+        }
+        else {
+            showGraphIsOn = true
+        }
     }
-  
+
     // This function is called before the storyboard view is loaded onto the screen.
     // Runs only once.
     override func viewDidLoad() {
@@ -223,8 +237,6 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
                 // Search for the characteristics of the service
                 peripheral.discoverCharacteristics(nil, for: service)
             }
-            
-            
         }
     }
     
@@ -271,9 +283,12 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         }
     }
     
+    // Sets up notifications to the app from the Feather
+    // Calls didUpdateValueForCharacteristic() whenever characteristic's value changes
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
         print("*******************************************************")
 
+        // Check if subscription was successful
         if (error != nil) {
             print("Error changing notification state:\(String(describing: error?.localizedDescription))")
 
@@ -281,12 +296,15 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
             print("Characteristic's value subscribed")
         }
 
+        // Print message for debugging purposes
         if (characteristic.isNotifying) {
             print ("Subscribed. Notification has begun for: \(characteristic.uuid)")
         }
     }
     
     // Called when peripheral.readValue(for: characteristic) is called
+    // Also called when characteristic value is updated in
+    // didUpdateNotificationStateFor() method
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic,
                     error: Error?) {
         
@@ -311,7 +329,6 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         if (showGraphIsOn && receivedData.count > 0) {
             displayGraph(dataDisplaying: receivedData)
         }
-        
         NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Notify"), object: self)
     }
     

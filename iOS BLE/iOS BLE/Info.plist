@@ -21,9 +21,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string></string>
+	<string>Can app use Bluetooth</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string></string>
+	<string>Can app comm w/ peripherals?</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
