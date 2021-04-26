@@ -24,7 +24,7 @@ BLEBas  blebas;  // battery
 
 bool BLEisConnected = false;
 
-uint16_t numVals = 10
+uint16_t numVals = 10;
 uint8_t vals[10] = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3};
 
 void setup()
