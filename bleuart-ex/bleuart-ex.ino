@@ -14,18 +14,13 @@
 #include <bluefruit.h>
 #include <Adafruit_LittleFS.h>
 #include <InternalFileSystem.h>
-#include "KickExampleData.h"
 
 // BLE Service
 BLEDfu  bledfu;  // OTA DFU service
 BLEDis  bledis;  // device information
 BLEUart bleuart; // uart over ble
 BLEBas  blebas;  // battery
-
 bool BLEisConnected = false;
-
-uint16_t numVals = 10;
-uint8_t vals[10] = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3};
 
 void setup()
 {
@@ -108,16 +103,18 @@ void startAdv(void)
 
 void loop()
 {
-  delay(1000);
+  // Forward data from HW Serial to BLEUART
+  while (BLEisConnected)
+  {
+    // Delay to wait for enough input, since we have a limited transmission buffer
+    delay(500);
 
-  // While there is a bluetooth connection, send the array values to app
-  while (BLEisConnected) {
-    bleuart.write(vals, numVals);
-    Serial.println("Done");
-    delay(5000);          // Wait 5 seconds
+    char buf[64];
+    itoa(analogRead(A0), buf, 10);
+    bleuart.write( buf, 1 );
   }
-   
-  // Forward from BLEUART to HW Serial, try to see if app
+
+  // Forward from BLEUART to HW Serial
   while ( bleuart.available() )
   {
     uint8_t ch;
@@ -153,158 +150,4 @@ void disconnect_callback(uint16_t conn_handle, uint8_t reason)
   Serial.println();
   Serial.print("Disconnected, reason = 0x"); Serial.println(reason, HEX);
   BLEisConnected = false;
-}
-
-int fill_buffer(const int16_t num, uint8_t text[])
-{
-  //Serial.println("Filling buffer");
-  String strData = String(num);
-  int strLen = strData.length();
-  int index = 0;
-  while(index < strLen) {
-    text[index] = strData[index];
-    //Serial.println(text[index]);
-    index++;
-  }
-  //text[index++] = ',';
-  //Serial.println("Buffer loaded");
-  return index;
-}
-
-
-int fill_buffer(const int16_t rawData[], uint8_t text[], int16_t samples)
-{
-  //Serial.println("Filling buffer");
-  int space = 0;
-  for (int i = 0; i < samples / 4; i++) {
-    String strData = String(rawData[i]);
-    int strLen = strData.length();
-    for (int k = 0; k < 4 - strLen; k++) {
-      text[space++] = ' ';
-      //Serial.println(k);
-    }
-    for (int j = 0; j < strLen; j++) {
-      text[space] = strData[j];  
-      space++;
-    }
-  }
-  //Serial.println("Buffer loaded");
-  return space;
-  /*
-  Serial.println("Filling buffer");
-  int index = 0;
-  for (int i = 0; i < samples; i++) {
-    String strData = String(rawData[i]);
-    int strLen = strData.length();
-    for (int j = 0; j < strLen; j++) {
-      text[index] = strData[j];
-      Serial.println((char) text[index]);
-      index++;
-    }
-    //text[index++] = ',';
-  }
-  Serial.println("Buffer loaded");
-  return index;
-  */
-}
-
-int fill_buffer(const int16_t rawData[], uint8_t text[], int16_t samples, uint16_t index)
-{
-  //Serial.println("Filling buffer");
-  int space = 0;
-  int lowLim = index;
-  int uppLim = samples / 4 + index;
-  String strData;
-  //char hex[3];
-  for (int i = lowLim; i < uppLim; i++) {
-    //String strData = String(rawData[i]);
-    //String strData = String(rawData[i], HEX);
-    strData = dec2hex(rawData[i]);
-    
-    int strLen = strData.length();
-    //for (int k = 0; k < 4 - strLen; k++) {
-    for (int k = 0; k < 3 - strLen; k++) {
-      text[space++] = ' ';
-      //Serial.println(k);
-    }
-    for (int j = 0; j < strLen; j++) {
-      text[space] = strData[j];  
-      space++;
-    }
-    index++;
-  }
-  //Serial.println("Buffer loaded");
-  return index;
-}
-
-void print_array(const uint8_t text[], int lim)
-{
-  for (int i = 0; i < lim; i++) {
-    //Serial.println(text[i]);
-    Serial.print(i);
-    Serial.print(", ");
-    //Serial.println((char) text[i]);
-    Serial.println(text[i]);
-  }
-  //Serial.print("Length: ");
-  //Serial.println(lim);
-}
-
-void print_int_array(const int16_t arr[], const int16_t samples)
-{
-  for (int i = 0; i < samples; i++) {
-    //Serial.println(text[i]);
-    Serial.print(i);
-    Serial.print(", ");
-    Serial.println(arr[i]);
-  }
-  Serial.print("int length: ");
-  Serial.println(samples);
-}
-
-String dec2hex(int16_t dec) {
-  if (dec > 1 && dec < 4095) {
-    char hex[3];
-    uint8_t index = 2;
-    while (dec > 0) {
-      uint8_t rem = dec % 16;
-      if (rem < 10) {
-        hex[index--] = rem + 48;
-      }
-      else {
-        hex[index--] = rem + 87;
-      }
-      dec /= 16;
-    }
-    return (String) hex;
-  }
-  else {
-    Serial.print("[ERROR] ");
-    Serial.print(dec);
-    Serial.println(" not in range 1-4095");
-  }
-}
-
-void decComp(const int16_t rawData[], uint8_t text[], uint16_t loLim, uint16_t hiLim) {
-  uint8_t dig;
-  int16_t datum;
-  int16_t textIdx = 0;
-  for (int i = loLim; i < hiLim; i++) {
-    datum = rawData[i];
-    //Serial.println(datum);
-    for (int j = 0; j < 2; j++) {
-      dig = (datum % 10) << (j * 4);
-      //Serial.println(dig);
-      text[textIdx] += dig;
-      datum /= 10;
-    }
-    textIdx++;
-    for (int j = 0; j < 2; j++) {
-      dig = (datum % 10) << (j * 4);
-      //Serial.println(dig);
-      text[textIdx] += dig;
-      datum /= 10;
-    }
-    textIdx++;
-  }
 }
