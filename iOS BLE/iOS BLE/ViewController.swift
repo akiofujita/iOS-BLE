@@ -316,19 +316,19 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
                                       encoding: String.Encoding.utf8.rawValue)
         else { return }
         
-        for i in 0..<receivedString.length {
-            // Print for debugging purposes
-            print(receivedString.character(at: i))
-            let number:Int = Int(receivedString.character(at: i))
-            receivedData.append(number)
+        let myInt = (receivedString as NSString).integerValue
+
+        receivedData.append(myInt)
+        print(myInt)
+
+        if (receivedData.count > 50) {
+            receivedData.removeFirst(receivedData.count - 50)
         }
         
-        if (receivedData.count > 100) {
-            receivedData.removeFirst(receivedData.count-100)
-        }
         if (showGraphIsOn && receivedData.count > 0) {
             displayGraph(dataDisplaying: receivedData)
         }
+        
         NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Notify"), object: self)
     }
     

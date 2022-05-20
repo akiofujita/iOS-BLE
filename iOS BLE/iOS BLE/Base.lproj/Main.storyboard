@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina5_5" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -13,11 +14,11 @@
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="iOS_BLE" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KCG-BT-iJA">
-                                <rect key="frame" x="0.0" y="1" width="414" height="43"/>
+                                <rect key="frame" x="0.0" y="44" width="390" height="44"/>
                                 <items>
                                     <navigationItem title="iOS BLE" id="XaL-C1-I3E">
                                         <barButtonItem key="rightBarButtonItem" title="refreshBtn" image="arrow.clockwise" catalog="system" id="IaI-Ui-FMm" userLabel="refreshBtn">
@@ -29,7 +30,7 @@
                                 </items>
                             </navigationBar>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show Graph" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9IA-Pa-So7" userLabel="showGraphLbl">
-                                <rect key="frame" x="10" y="60" width="94" height="21"/>
+                                <rect key="frame" x="10" y="104" width="94" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="94" id="EYB-so-Jqv"/>
                                 </constraints>
@@ -37,22 +38,25 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mOS-YA-bzz" userLabel="showGraphSw">
-                                <rect key="frame" x="114" y="55" width="51" height="31"/>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" placeholderIntrinsicWidth="49" placeholderIntrinsicHeight="31" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mOS-YA-bzz" userLabel="showGraphSw">
+                                <rect key="frame" x="114" y="99" width="51" height="31"/>
                                 <connections>
                                     <action selector="showGraphBtn:" destination="BYZ-38-t0r" eventType="valueChanged" id="3AV-Ub-YIS"/>
                                 </connections>
                             </switch>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Disconnected" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B9v-RA-Oiz" userLabel="connectStatusLbl">
-                                <rect key="frame" x="294" y="60" width="106" height="21"/>
+                                <rect key="frame" x="262" y="104" width="106" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tVL-KK-RpK" userLabel="chartBox" customClass="LineChartView" customModule="Charts">
-                                <rect key="frame" x="20" y="117" width="374" height="599"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="30w-0S-JcD" customClass="LineChartView" customModule="Charts">
+                                <rect key="frame" x="20" y="150" width="350" height="550"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="350" id="NNC-Ye-q6O"/>
+                                    <constraint firstAttribute="height" constant="550" id="NuM-6X-Sm5"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -60,16 +64,17 @@
                         <constraints>
                             <constraint firstItem="KCG-BT-iJA" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="0SA-jp-0Wt"/>
                             <constraint firstItem="9IA-Pa-So7" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="1r0-ip-wY6"/>
+                            <constraint firstItem="30w-0S-JcD" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="2bg-EC-wwV"/>
                             <constraint firstItem="B9v-RA-Oiz" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="60" id="82T-bn-Djd"/>
+                            <constraint firstItem="30w-0S-JcD" firstAttribute="top" secondItem="mOS-YA-bzz" secondAttribute="bottom" constant="20" id="CSo-j3-rGS"/>
                             <constraint firstItem="9IA-Pa-So7" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="60" id="GJJ-VJ-589"/>
                             <constraint firstItem="mOS-YA-bzz" firstAttribute="leading" secondItem="9IA-Pa-So7" secondAttribute="trailing" constant="10" id="LhY-Xe-KdB"/>
-                            <constraint firstItem="KCG-BT-iJA" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="-692" id="TN7-YN-JRN"/>
                             <constraint firstItem="KCG-BT-iJA" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="bBj-RL-C6V"/>
                             <constraint firstItem="mOS-YA-bzz" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="55" id="bHK-0d-RaQ"/>
-                            <constraint firstItem="B9v-RA-Oiz" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" constant="140" id="hzi-ha-wLa"/>
+                            <constraint firstItem="B9v-RA-Oiz" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" constant="120" id="hzi-ha-wLa"/>
                             <constraint firstItem="B9v-RA-Oiz" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="60" id="lnZ-11-koq"/>
                             <constraint firstItem="B9v-RA-Oiz" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" constant="300" id="n7h-ec-btj"/>
-                            <constraint firstItem="KCG-BT-iJA" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="1" id="q5u-oE-m9K"/>
+                            <constraint firstItem="KCG-BT-iJA" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="q5u-oE-m9K"/>
                             <constraint firstItem="KCG-BT-iJA" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="ztu-gF-1Wz"/>
                         </constraints>
                         <variation key="default">
@@ -90,7 +95,7 @@
                         </variation>
                     </view>
                     <connections>
-                        <outlet property="chartBox" destination="tVL-KK-RpK" id="P1p-8y-mCD"/>
+                        <outlet property="chartBox" destination="30w-0S-JcD" id="sOR-Hz-pww"/>
                         <outlet property="connectStatusLbl" destination="B9v-RA-Oiz" id="fbi-3U-FL6"/>
                         <outlet property="showGraphLbl" destination="9IA-Pa-So7" id="qxw-bi-Cwc"/>
                     </connections>
@@ -98,7 +103,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
                 <barButtonItem image="arrow.clockwise" catalog="system" id="uly-jL-Sqx"/>
             </objects>
-            <point key="canvasLocation" x="33.333333333333336" y="92.119565217391312"/>
+            <point key="canvasLocation" x="32.307692307692307" y="91.706161137440759"/>
         </scene>
     </scenes>
     <resources>

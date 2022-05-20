@@ -104,14 +104,24 @@ void startAdv(void)
 void loop()
 {
   // Forward data from HW Serial to BLEUART
+  // Only send data while the nRF52832 is actually connected
   while (BLEisConnected)
   {
     // Delay to wait for enough input, since we have a limited transmission buffer
     delay(500);
-
     char buf[64];
-    itoa(analogRead(A0), buf, 10);
-    bleuart.write( buf, 1 );
+    
+    // Read value from pin A0 of the nRF52832
+    int num = analogRead(A0);
+
+    // Convert integer value of "num" to String, since ble only works with characters, not integers
+    String value = String(num);
+
+    // Convert String into an array of characters that will be stored in "buf"
+    value.toCharArray(buf, 64);
+
+    // Send the buf (character array) via BLE
+    bleuart.write( buf, strlen(buf) );
   }
 
   // Forward from BLEUART to HW Serial
@@ -134,6 +144,8 @@ void connect_callback(uint16_t conn_handle)
 
   Serial.print("Connected to ");
   Serial.println(central_name);
+
+  // nRF52832 has connected
   BLEisConnected = true;
 }
 
@@ -149,5 +161,7 @@ void disconnect_callback(uint16_t conn_handle, uint8_t reason)
 
   Serial.println();
   Serial.print("Disconnected, reason = 0x"); Serial.println(reason, HEX);
+
+  // nRF52832 has disconnected
   BLEisConnected = false;
 }
