@@ -1,8 +1,8 @@
 //
 //  ViewController.swift
-//  iOS BLE
+//  iOS-BLE-Send
 //
-//  Created by shaqattack13 on 2/14/21.
+//  Created by shaqattack13 on 7/19/22.
 //
 
 // Import necessary modules
@@ -30,8 +30,15 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     let BLE_Characteristic_uuid_Tx  = CBUUID.init(string: "6e400002-b5a3-f393-e0a9-e50e24dcca9e")
 
     @IBOutlet weak var connectStatusLbl: UILabel!
-    @IBOutlet weak var dataLbl: UILabel!
     
+    @IBAction func refreshBtn(_ sender: Any) {
+        if (curPeripheral != nil) {
+            centralManager?.cancelPeripheralConnection(curPeripheral!)
+        }
+        usleep(1000000)
+        startScan()
+    }
+
     // This function is called before the storyboard view is loaded onto the screen.
     // Runs only once.
     override func viewDidLoad() {
@@ -291,8 +298,6 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
                                       encoding: String.Encoding.utf8.rawValue)
         else { return }
         
-        dataLbl.text = "Value: " + (receivedString as String)
-        
         NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Notify"), object: self)
     }
     
@@ -326,3 +331,4 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         }
     }
 }
+
