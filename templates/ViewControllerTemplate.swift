@@ -30,14 +30,11 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     let BLE_Characteristic_uuid_Tx  = CBUUID.init(string: "6e400002-b5a3-f393-e0a9-e50e24dcca9e")
     
 
-    /* INITIALIZE YOUR OWN VARIABLES HERE */
+    /* MARK: SECTION 1 - INITIALIZE YOUR OWN VARIABLES HERE */
 
 
 
-    /* INITIALIZE YOUR OWN FUNCTIONS HERE */
-
-
-
+    /* MARK: SECTION 2 - INITIALIZE YOUR OWN FUNCTIONS HERE */
 
 
 
@@ -271,7 +268,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         let myInt = (receivedString as NSString).integerValue
 
 
-        /* PERFORM ACTIONS WITH THE RECEIVED VALUE HERE */
+        /* MARK: SECTION 3 - PERFORM ACTIONS WITH THE RECEIVED VALUE HERE */
 
 
 
@@ -286,7 +283,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
             return
         }
 
-        /* PERFORM ACTIONS TO SEND MESSAGE TO PERIPHERAL */
+        /* MARK: SECTION 4 - PERFORM ACTIONS TO SEND MESSAGE TO PERIPHERAL */
 
 
 
